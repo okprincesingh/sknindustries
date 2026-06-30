@@ -1,0 +1,47 @@
+# robots.txt for https://www.sknindustries.com/
+
+User-agent: *
+Allow: /llms.txt
+
+# Block admin and sensitive areas
+Disallow: /admin/
+Disallow: /login/
+Disallow: /wp-admin/
+Disallow: /cgi-bin/
+
+# Prevent crawling of parameter-based duplicate URLs
+Disallow: /*?b=
+
+# AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemap
+Sitemap: https://www.sknindustries.com/sitemap.xml

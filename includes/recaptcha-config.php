@@ -1,0 +1,5 @@
+<?php
+require_once __DIR__ . '/env.php';
+
+define('RECAPTCHA_SITE_KEY', envValue('RECAPTCHA_SITE_KEY', 'YOUR_RECAPTCHA_SITE_KEY'));
+define('RECAPTCHA_SECRET_KEY', envValue('RECAPTCHA_SECRET_KEY', 'YOUR_RECAPTCHA_SECRET_KEY'));

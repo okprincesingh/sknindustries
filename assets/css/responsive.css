@@ -1,0 +1,120 @@
+:root{
+    --prm2-color:#2A3695;
+    --prm2-color:#0066B1;
+    /*--prm9-color:#008FCA;*/
+    --sec1-color:#FFE9DE;
+    --sec2-color:#ffffff;
+}
+
+@media (max-width:991px) {
+    .menuToggle{
+        display: block !important;
+        right: 0;
+        top: 0;
+        position: absolute;
+        background: transparent;
+        padding: 10px;
+        border-radius: 4px;
+        color: #000;
+        
+   
+    }
+    .w-icon{
+        display: block !important;
+        right: 0;
+        top: 0;
+        position: relative;
+        background: transparent;
+      
+        border-radius: 4px;
+       
+    }
+    .closebtn{
+        margin-top: 5px;
+        width: 30px;
+        height: 30px;
+        color: #FFE9DE;
+      background: #000;
+        border-radius: 50%;
+    text-align:center;
+    padding-top: 3px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    position: relative;
+    right: -80%;
+    display: block !important;
+    margin-right: 100% !important;
+    }
+    
+    
+    
+    .main{
+        color: black;
+    padding: 16px 0px;
+    position: fixed;
+    width: 70%;
+    /* height: 100%; */
+   
+    top: 0%;
+    left: -100%;
+    z-index: 99999 !important;
+    background:var(--prm2-color);
+    transition: all .3s linear;
+   
+}
+
+    .main ul{ display: flex; flex-direction: column; gap: 10px; padding-left: 10px; top: 0;}
+
+    .main.open{
+        left: 0px !important;
+    }
+    .main a{
+        color: #fff;
+    }
+    .side-open{
+        height: 100vh;
+    }
+    .center{
+        justify-content: center;
+    }
+    .iso{
+        display: flex !important;
+    }
+    .nav-btns{
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+    .q-row{
+        gap: 20px;
+    }
+   .rate{
+    display: flex !important;
+   }
+   
+   .header-media-grp{
+    display: block !important;
+  }
+ 
+ .btn-grp{
+    justify-content: center;
+ }
+ .social-icons{
+    justify-content: center;
+ }
+.laptop{
+    display: none !important;
+}
+#mobile{
+    display: block !important;
+}
+.slider-btns{
+    display: none  !important;
+    
+   }
+}
+
+@media (max-width:661px) {
+    .header-media-grp{
+        display: block !important;
+      }
+}
