@@ -26,7 +26,7 @@ if (isset($_POST['categories_update'])) {
     $timestamp = time();
     $a5 = date('Y-m-d', $timestamp); // Correct MySQL date format
 
-    $location = "product/";
+    $location = "../product/images/";
 
     // Include database connection
     include 'config/connection.inc.php';

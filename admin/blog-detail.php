@@ -170,7 +170,7 @@ if (!isset($_SESSION['ADMIN_LOGIN'])) {
                     <tr>
                       <td><?php echo $k['title']; ?></td>
                       <td><?php echo $k['admin_name']; ?></td>
-                      <td><img src="blog/<?php echo $k['image']; ?>" alt="1"></td>
+                      <td><img src="../blog/images/<?php echo $k['image']; ?>" alt="1"></td>
                       <td><?php echo $k['date']; ?></td>
                       <td class="action-icons">
                         <i class="bi bi-trash3" title="Delete Blog" data-id='<?php echo $k['id']; ?>' id="click_delete"></i>

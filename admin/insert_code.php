@@ -12,7 +12,7 @@ if (isset($_POST['blog_insert'])) {
     $canonical_url = $_POST['canonical_url'] ?? '';
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
-    $location = "blog/";
+    $location = "../blog/images/";
 
     include 'config/connection.php';
     function createSlug($string)

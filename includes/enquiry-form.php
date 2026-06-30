@@ -29,7 +29,7 @@
 foreach (array_slice($images222, 0, 1) as $index => $image1) {
 ?>
     <div style="margin-bottom:12px; text-align:center;">
-        <img src="../admin/product/<?php echo htmlspecialchars($image1[0]); ?>" 
+        <img src="../product/images/<?php echo htmlspecialchars($image1[0]); ?>" 
              alt="product" width="100%" 
              style="max-height:200px; object-fit:contain; border-radius:6px;">
     </div>

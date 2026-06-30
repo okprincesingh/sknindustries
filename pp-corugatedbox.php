@@ -177,7 +177,7 @@ if (mysqli_num_rows($query) > 0) {
             <h4 class="text-center"><?php echo htmlspecialchars($new_product); ?></h4>
 
             <?php if (!empty($images[0])) { ?>
-                <img src="./admin/product/<?php echo htmlspecialchars($images[0]); ?>"
+                <img src="./product/images/<?php echo htmlspecialchars($images[0]); ?>"
                      alt="<?php echo htmlspecialchars($product_name); ?>" 
                      style="aspect-ratio:19/16;" width="100%">
             <?php } ?>
@@ -221,7 +221,7 @@ if (mysqli_num_rows($query) > 0) {
                     <!-- Product Image -->
                     <?php if (!empty($images[0])) { ?>
                         <div style="margin-bottom:12px; text-align:center;">
-                            <img src="./admin/product/<?php echo htmlspecialchars($images[0]); ?>" 
+                            <img src="./product/images/<?php echo htmlspecialchars($images[0]); ?>" 
                                  alt="product" width="100%" 
                                  style="max-height:200px; object-fit:contain; border-radius:6px;">
                         </div>

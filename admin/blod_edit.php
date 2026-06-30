@@ -20,9 +20,19 @@ if (isset($_POST['blog_update'])) {
     $canonical_url = $_POST['canonical_url'] ?? '';
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
-    $location = "blog/";
+    $location = "../blog/images/";
 
     include 'config/connection.php';
+
+    // Get old blog image
+    $oldImage = "";
+
+    $getOldImage = mysqli_query($con, "SELECT image FROM blog WHERE id='$id'");
+
+    if ($getOldImage && mysqli_num_rows($getOldImage) > 0) {
+    $oldRow = mysqli_fetch_assoc($getOldImage);
+    $oldImage = $oldRow['image'];
+    }
 
     function createSlug($string)
     {
@@ -54,6 +64,15 @@ if (isset($_POST['blog_update'])) {
                 if (!empty($_FILES['image']['name'])) {
                     $targetPath = $location . $image_name;
                     if (move_uploaded_file($image_tmp_name, $targetPath)) {
+                      // Delete old image after successful upload
+if (!empty($oldImage)) {
+
+    $oldImagePath = "../blog/images/" . $oldImage;
+
+    if (file_exists($oldImagePath)) {
+        unlink($oldImagePath);
+    }
+}
                         // Display success message using SMS notification
                         echo "<script>
                                 document.addEventListener('DOMContentLoaded', function() {
@@ -204,7 +223,7 @@ if (isset($_POST['blog_update'])) {
                 </div>
                 <div class="col-12">
                   <label for="inputPassword4" class="form-label">Upload Image</label>
-                  <img src="blog/<?php echo $k['image'] ?>" style="height: 50px; width: auto; padding: 5px;"
+                  <img src="../blog/images/<?php echo $k['image'] ?>" style="height: 50px; width: auto; padding: 5px;"
                     alt="Current Image">
                   <input type="file" name="image" class="form-control" id="inputPassword4"
                     value="<?php echo $k['image'] ?>">

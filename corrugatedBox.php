@@ -228,7 +228,7 @@ if (!empty($images222)) {
         }
 ?>
     <div class="col-12 col-sm-6 col-md-4" style="padding:6px;">
-        <img src="./admin/product/<?php echo htmlspecialchars($image1); ?>" 
+        <img src="./product/images/<?php echo htmlspecialchars($image1); ?>" 
              alt="SKN Industries"
              style="aspect-ratio:19/16; width:100%; object-fit:cover; border-radius:6px;">
     </div>
@@ -354,7 +354,7 @@ if (!empty($images222)) {
         }
 ?>
     <div class="col-12 col-sm-6 col-md-4" style="padding:6px;">
-        <img src="./admin/product/<?php echo htmlspecialchars($image1); ?>" 
+        <img src="./product/images/<?php echo htmlspecialchars($image1); ?>" 
              alt="SKN Industries"
              style="aspect-ratio:19/16; width:100%; object-fit:cover; border-radius:6px;">
     </div>

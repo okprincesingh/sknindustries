@@ -14,7 +14,7 @@ if (isset($_POST['latestblog'])) {
         echo '<div class="swiper-slide">
                                     <div class="blogCard">
                                         <div class="blogImg">
-                                            <img src="./admin/blog/' . $image . '" alt="Blog Img">
+                                            <img src="./blog/images/' . $image . '" alt="Blog Img">
                                         </div>
                                         <div class="blogCardContent">
                                             <h3>' . $title . '</h3>

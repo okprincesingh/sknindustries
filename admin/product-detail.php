@@ -23,7 +23,7 @@ if (isset($_POST['categories_insert'])) {
     $description = $_POST['description'];
     $timestamp = time();
     $date = date('Y-M-d', $timestamp); // MySQL date format
-    $location = "product/";
+    $location = "../product/images/";
 
     // Check the connection
     if (!$con) {
@@ -106,7 +106,7 @@ if (isset($_POST['product_insert'])) {
     $timestamp = time();
     $date = date('Y-m-d', $timestamp); // Correct MySQL date format
     $description = $_POST['description'] ?? '';
-    $location = "product/";
+    $location = "../product/images/";
 
     // Check the database connection
     if (!$con) {
@@ -431,7 +431,7 @@ if (isset($_POST['product_insert'])) {
               <td><?php echo $new_cat; ?></td>
               <td>
                 <?php foreach (array_slice($images, 0, 1) as $index => $image1): ?>
-                  <img src="product/<?php echo $image1; ?>" alt="1">
+                  <img src="../product/images/<?php echo $image1; ?>" alt="1">
                 <?php endforeach; ?>
               </td>
               <td><?php echo $k['date']; ?></td>
@@ -556,7 +556,7 @@ if (isset($_POST['product_insert'])) {
                       ?>
                       <tr>
                         <td><?php echo $new_cat; ?></td>
-                        <td><img src="product/<?php echo $k['image']; ?>" alt="1"></td>
+                        <td><img src="../product/images/<?php echo $k['image']; ?>" alt="1"></td>
                         <td><?php echo $k['date']; ?></td>
                         <td class="action-icons">
     <i class="bi bi-trash3" title="Delete Categories" data-id='<?php echo $k['catid']; ?>'

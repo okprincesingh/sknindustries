@@ -99,7 +99,7 @@ if(isset($_SERVER['PATH_INFO'])){
         <div class="row">
            <div class="col-lg-6">
                <div  style="position:sticky; top:10px ">
-    <img src="./admin/blog/<?php echo $image; ?>" alt="Skn industries" width="100%" >
+    <img src="./blog/images/<?php echo $image; ?>" alt="Skn industries" width="100%" >
 </div>
            </div>
             <div class="col-lg-6">

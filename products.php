@@ -75,7 +75,7 @@ while ($row = mysqli_fetch_array($result)) {
             <div class="row">
                 <!-- Category Image Section -->
                 <div class="col-lg-3">
-                    <img src="./admin/product/<?php echo $image; ?>" alt="Skn industries" width="100%" class="hover">
+                    <img src="./product/images/<?php echo $image; ?>" alt="Skn industries" width="100%" class="hover">
                 </div>
 
                 <!-- Category Details -->

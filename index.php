@@ -376,7 +376,7 @@ while ($row = mysqli_fetch_array($result3)) {
 
     // Loop through the images and display the first one
     foreach (array_slice($images222, 0, 1) as $image1) {
-        echo "<img src='./admin/product/$image1' alt='' style='aspect-ratio: 19/16;' width='100%' />";
+        echo "<img src='./product/images/$image1' alt='' style='aspect-ratio: 19/16;' width='100%' />";
     }
 
     echo "<h6 class='card-h'>$new_name</h6>
@@ -422,7 +422,7 @@ while ($row = mysqli_fetch_array($result4)) {
             <a href="product-details-' . htmlspecialchars(ltrim((string)$slug_url, '/')) . '">
                 ';
                 foreach (array_slice($images222, 0, 1) as $image1) {
-                    echo '<img src="./admin/product/' . htmlspecialchars($image1) . '" alt="skn industries" width="100%" class="v-img" style="aspect-ratio: 19/19;" height="100%">';
+                    echo '<img src="./product/images/' . htmlspecialchars($image1) . '" alt="skn industries" width="100%" class="v-img" style="aspect-ratio: 19/19;" height="100%">';
                 }
                 echo '
             </a>
@@ -1458,7 +1458,7 @@ include "./admin/config/connection.php";
         echo '
          <div class="swiper-slide  mx-2">
             <div class="card">
-              <img src="./admin/blog/' . $image . '" alt="Card image cap"
+              <img src="./blog/images/' . $image . '" alt="Card image cap"
                 width="100%" style="aspect-ratio: 19/12;">
               <div class="card-body">
                 <h5 class="card-title">' . $title . '</h5>
@@ -1530,7 +1530,7 @@ include "./admin/config/connection.php";
               display:flex; justify-content:center; align-items:center; cursor:pointer;"
             onmouseover="this.style.background='#fff'; this.style.color='#2A3695';"
             onmouseout="this.style.background='white'; this.style.color='#2A3695';">
-            ¡Á
+            ï¿½ï¿½
           </button>
         </div>
         <div class="modal-body" style="background:#f5f6f7; padding:18px 20px;">

@@ -73,7 +73,7 @@ include "./admin/config/connection.php";
          <div class="container border py-2 my-2">
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <img src="./admin/blog/' . $image . '" alt="skn industries" width="100%" class="hover">
+                                    <img src="./blog/images/' . $image . '" alt="skn industries" width="100%" class="hover">
                                 </div>
                                 <div class="col-lg-8">
                                     <h3>' . $title . '</h3>
