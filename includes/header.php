@@ -178,9 +178,3 @@ include "./admin/config/connection.php";
 -->
 
 </div>
-
-<script>
-  document.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-  });
-</script>
