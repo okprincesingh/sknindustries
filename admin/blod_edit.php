@@ -58,74 +58,42 @@ if (isset($_POST['blog_update'])) {
 
     if ($update) {
         if (mysqli_stmt_execute($update)) {
-            // Check if the title was updated successfully
-            if (mysqli_stmt_affected_rows($update) > 0) {
-                // Move uploaded files
-                if (!empty($_FILES['image']['name'])) {
-                    $targetPath = $location . $image_name;
-                    if (move_uploaded_file($image_tmp_name, $targetPath)) {
-                      // Delete old image after successful upload
-if (!empty($oldImage)) {
+            if (!empty($_FILES['image']['name'])) {
+                $targetPath = $location . $image_name;
+                if (move_uploaded_file($image_tmp_name, $targetPath)) {
+                    // Delete old image after successful upload
+                    if (!empty($oldImage)) {
+                        $oldImagePath = "../blog/images/" . $oldImage;
 
-    $oldImagePath = "../blog/images/" . $oldImage;
-
-    if (file_exists($oldImagePath)) {
-        unlink($oldImagePath);
-    }
-}
-                        // Display success message using SMS notification
-                        echo "<script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    var smsPopup = document.createElement('div');
-                                    smsPopup.innerText = 'Data updated successfully';
-                                    smsPopup.style.position = 'fixed';
-                                    smsPopup.style.bottom = '10px';
-                                    smsPopup.style.right = '10px';
-                                    smsPopup.style.backgroundColor = '#4caf50';
-                                    smsPopup.style.color = '#fff';
-                                    smsPopup.style.padding = '10px';
-                                    smsPopup.style.borderRadius = '5px';
-                                    smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-                                    document.body.appendChild(smsPopup);
-                                    setTimeout(function() {
-                                        smsPopup.remove();
-                                        window.location.href = 'blog-detail';
-                                    }, 3000);
-                                });
-                              </script>";
-                    } else {
-                        // Error moving uploaded file
-                        echo "<script>alert('Error moving uploaded file'); window.location.href='blog-detail'; </script>";
-                        exit;
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
                     }
                 } else {
-                    echo "<script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                var smsPopup = document.createElement('div');
-                                smsPopup.innerText = 'Data updated successfully';
-                                smsPopup.style.position = 'fixed';
-                                smsPopup.style.bottom = '10px';
-                                smsPopup.style.right = '10px';
-                                smsPopup.style.backgroundColor = '#4caf50';
-                                smsPopup.style.color = '#fff';
-                                smsPopup.style.padding = '10px';
-                                smsPopup.style.borderRadius = '5px';
-                                smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-                                document.body.appendChild(smsPopup);
-                                setTimeout(function() {
-                                    smsPopup.remove();
-                                    window.location.href = 'blog-detail';
-                                }, 3000);
-                            });
-                          </script>";
+                    echo "<script>alert('Error moving uploaded file'); window.location.href='blog-detail'; </script>";
+                    exit;
                 }
-            } 
-            
-            else {
-                // Title was not updated
-                echo "<script>alert('Error updating title'); window.location.href='blog-detail'; </script>";
-                exit;
             }
+
+            echo "<script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var smsPopup = document.createElement('div');
+                        smsPopup.innerText = 'Data updated successfully';
+                        smsPopup.style.position = 'fixed';
+                        smsPopup.style.bottom = '10px';
+                        smsPopup.style.right = '10px';
+                        smsPopup.style.backgroundColor = '#4caf50';
+                        smsPopup.style.color = '#fff';
+                        smsPopup.style.padding = '10px';
+                        smsPopup.style.borderRadius = '5px';
+                        smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+                        document.body.appendChild(smsPopup);
+                        setTimeout(function() {
+                            smsPopup.remove();
+                            window.location.href = 'blog-detail';
+                        }, 3000);
+                    });
+                  </script>";
         } else {
             // Error executing the update
             echo "<script>alert('Error executing the update'); window.location.href='blog-detail'; </script>";
