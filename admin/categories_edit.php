@@ -29,7 +29,7 @@ if (isset($_POST['categories_update'])) {
     $location = "../product/images/";
 
     // Include database connection
-    include 'config/connection.inc.php';
+    include 'config/connection.php';
 
     // Check the connection
     if (!$con) {
@@ -61,7 +61,7 @@ if (isset($_POST['categories_update'])) {
         // Image uploaded, include image field in the update query
         $image_name_safe = mysqli_real_escape_string($con, $e2); // Escape image name
         $upd = mysqli_prepare($con, "UPDATE pro_categories SET cat_name = ?, image = ?, metakeyword = ?, metadescription = ?, metatitle = ?, canonical_url = ?, date = ?, description = ?, slug_url = ? WHERE catid = ?");
-        mysqli_stmt_bind_param($upd, "ssssssssi", $cat_name_safe, $image_name_safe, $metakeyword_safe, $metadescription_safe, $metatitle_safe, $canonical_url, $a5, $description_safe, $slug_safe, $catid);
+        mysqli_stmt_bind_param($upd, "sssssssssi", $cat_name_safe, $image_name_safe, $metakeyword_safe, $metadescription_safe, $metatitle_safe, $canonical_url, $a5, $description_safe, $slug_safe, $catid);
     }
 
     // Execute the update statement
