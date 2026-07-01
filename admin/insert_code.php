@@ -12,7 +12,8 @@ if (isset($_POST['blog_insert'])) {
     $canonical_url = $_POST['canonical_url'] ?? '';
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
-    $location = "../blog/images/";
+    $location = __DIR__ . "/../blog/images/";
+    $safeImageName = !empty($image_name) ? time() . '_' . basename($image_name) : '';
 
     include 'config/connection.php';
     function createSlug($string)
@@ -33,11 +34,26 @@ if (isset($_POST['blog_insert'])) {
     $ins = mysqli_prepare($con, "INSERT INTO blog (title, admin_name, date, image, meta_title, meta_description, meta_keyword, canonical_url, description, slug_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if ($ins) {
-        mysqli_stmt_bind_param($ins, "ssssssssss", $title, $admin_name, $date, $image_name, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug);
+        mysqli_stmt_bind_param($ins, "ssssssssss", $title, $admin_name, $date, $safeImageName, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug);
 
         if (mysqli_stmt_execute($ins)) {
             if (!empty($image_name) && !empty($image_tmp_name)) {
-                $targetPath = $location . $image_name;
+                if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+                    echo '<script>alert("Upload error code: ' . (int) $_FILES['image']['error'] . '"); window.location.href="blog-detail";</script>';
+                    exit;
+                }
+
+                if (!is_dir($location) && !mkdir($location, 0755, true)) {
+                    echo '<script>alert("Blog image folder does not exist or cannot be created"); window.location.href="blog-detail";</script>';
+                    exit;
+                }
+
+                if (!is_writable($location)) {
+                    echo '<script>alert("Blog image folder is not writable"); window.location.href="blog-detail";</script>';
+                    exit;
+                }
+
+                $targetPath = $location . $safeImageName;
                 if (move_uploaded_file($image_tmp_name, $targetPath)) {
                     echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {

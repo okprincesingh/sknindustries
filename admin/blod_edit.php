@@ -20,7 +20,8 @@ if (isset($_POST['blog_update'])) {
     $canonical_url = $_POST['canonical_url'] ?? '';
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
-    $location = "../blog/images/";
+    $location = __DIR__ . "/../blog/images/";
+    $safeImageName = !empty($image_name) ? time() . '_' . basename($image_name) : '';
 
     include 'config/connection.php';
 
@@ -53,24 +54,39 @@ if (isset($_POST['blog_update'])) {
         mysqli_stmt_bind_param($update, "sssssssssi", $title, $admin_name, $date, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
     } else {
         $update = mysqli_prepare($con, "UPDATE blog SET title=?, admin_name=?, date=?, image=?, meta_title=?, meta_description=?, meta_keyword=?, canonical_url=?, description=?, slug_url=? WHERE id=?");
-        mysqli_stmt_bind_param($update, "ssssssssssi", $title, $admin_name, $date, $image_name, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
+        mysqli_stmt_bind_param($update, "ssssssssssi", $title, $admin_name, $date, $safeImageName, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
     }
 
     if ($update) {
         if (mysqli_stmt_execute($update)) {
             if (!empty($_FILES['image']['name'])) {
-                $targetPath = $location . $image_name;
+                if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+                    echo "<script>alert('Upload error code: " . (int) $_FILES['image']['error'] . "'); window.location.href='blog-detail'; </script>";
+                    exit;
+                }
+
+                if (!is_dir($location) && !mkdir($location, 0755, true)) {
+                    echo "<script>alert('Blog image folder does not exist or cannot be created'); window.location.href='blog-detail'; </script>";
+                    exit;
+                }
+
+                if (!is_writable($location)) {
+                    echo "<script>alert('Blog image folder is not writable'); window.location.href='blog-detail'; </script>";
+                    exit;
+                }
+
+                $targetPath = $location . $safeImageName;
                 if (move_uploaded_file($image_tmp_name, $targetPath)) {
                     // Delete old image after successful upload
                     if (!empty($oldImage)) {
-                        $oldImagePath = "../blog/images/" . $oldImage;
+                        $oldImagePath = $location . $oldImage;
 
                         if (file_exists($oldImagePath)) {
                             unlink($oldImagePath);
                         }
                     }
                 } else {
-                    echo "<script>alert('Error moving uploaded file'); window.location.href='blog-detail'; </script>";
+                    echo "<script>alert('Error moving uploaded file. Check blog/images folder permission.'); window.location.href='blog-detail'; </script>";
                     exit;
                 }
             }
