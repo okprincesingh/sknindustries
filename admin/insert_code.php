@@ -1,4 +1,10 @@
 <?php
+function blogInsertAlert($message)
+{
+    echo '<script>alert("' . addslashes($message) . '"); window.location.href="blog-detail";</script>';
+    exit;
+}
+
 if (isset($_POST['blog_insert'])) {
     $title = $_POST['title'] ?? '';
     $admin_name = $_POST['admin_name'] ?? '';
@@ -13,7 +19,16 @@ if (isset($_POST['blog_insert'])) {
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
     $location = __DIR__ . "/../blog/images/";
-    $safeImageName = !empty($image_name) ? time() . '_' . basename($image_name) : '';
+    $safeImageName = '';
+    if (!empty($image_name)) {
+        $extension = pathinfo($image_name, PATHINFO_EXTENSION);
+        $baseName = pathinfo($image_name, PATHINFO_FILENAME);
+        $baseName = preg_replace('/[^A-Za-z0-9_-]+/', '-', $baseName);
+        $safeImageName = time() . '_' . trim($baseName, '-');
+        if ($extension !== '') {
+            $safeImageName .= '.' . strtolower($extension);
+        }
+    }
 
     include 'config/connection.php';
     function createSlug($string)
@@ -31,31 +46,31 @@ if (isset($_POST['blog_insert'])) {
     $slug = $slug_url !== '' ? $slug_url : createSlug($title);
     $slug = preg_replace('/\s+/', '-', trim($slug));
     
+    if (!empty($image_name) && !empty($image_tmp_name)) {
+        if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+            blogInsertAlert('Upload error code: ' . (int) $_FILES['image']['error']);
+        }
+
+        if (!is_dir($location) && !mkdir($location, 0755, true)) {
+            blogInsertAlert('Blog image folder does not exist or cannot be created');
+        }
+
+        if (!is_writable($location)) {
+            blogInsertAlert('Blog image folder is not writable');
+        }
+
+        if (!move_uploaded_file($image_tmp_name, $location . $safeImageName)) {
+            blogInsertAlert('Error moving uploaded file. Check blog/images folder permission.');
+        }
+    }
+
     $ins = mysqli_prepare($con, "INSERT INTO blog (title, admin_name, date, image, meta_title, meta_description, meta_keyword, canonical_url, description, slug_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
     if ($ins) {
         mysqli_stmt_bind_param($ins, "ssssssssss", $title, $admin_name, $date, $safeImageName, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug);
 
         if (mysqli_stmt_execute($ins)) {
-            if (!empty($image_name) && !empty($image_tmp_name)) {
-                if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
-                    echo '<script>alert("Upload error code: ' . (int) $_FILES['image']['error'] . '"); window.location.href="blog-detail";</script>';
-                    exit;
-                }
-
-                if (!is_dir($location) && !mkdir($location, 0755, true)) {
-                    echo '<script>alert("Blog image folder does not exist or cannot be created"); window.location.href="blog-detail";</script>';
-                    exit;
-                }
-
-                if (!is_writable($location)) {
-                    echo '<script>alert("Blog image folder is not writable"); window.location.href="blog-detail";</script>';
-                    exit;
-                }
-
-                $targetPath = $location . $safeImageName;
-                if (move_uploaded_file($image_tmp_name, $targetPath)) {
-                    echo "<script>
+            echo "<script>
                     document.addEventListener('DOMContentLoaded', function() {
                         var smsPopup = document.createElement('div');
                         smsPopup.innerText = 'Data inserted successfully';
@@ -74,38 +89,17 @@ if (isset($_POST['blog_insert'])) {
                         }, 1000);
                     });
                   </script>";
-                } else {
-                    echo '<script>alert("Error moving uploaded file"); window.location.href="blog-detail";</script>';
-                    exit;
-                }
-            } else {
-                echo "<script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    var smsPopup = document.createElement('div');
-                    smsPopup.innerText = 'Data inserted successfully';
-                    smsPopup.style.position = 'fixed';
-                    smsPopup.style.bottom = '10px';
-                    smsPopup.style.right = '10px';
-                    smsPopup.style.backgroundColor = '#4caf50';
-                    smsPopup.style.color = '#fff';
-                    smsPopup.style.padding = '10px';
-                    smsPopup.style.borderRadius = '5px';
-                    smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-                    document.body.appendChild(smsPopup);
-                    setTimeout(function() {
-                        smsPopup.remove();
-                        window.location.href = 'blog-detail';
-                    }, 1000);
-                });
-              </script>";
-            }
         } else {
-            echo '<script>alert("Error executing the insert"); window.location.href="blog-detail";</script>';
-            exit;
+            if (!empty($safeImageName) && file_exists($location . $safeImageName)) {
+                unlink($location . $safeImageName);
+            }
+            blogInsertAlert('Error executing the insert: ' . mysqli_stmt_error($ins));
         }
     } else {
-        echo '<script>alert("Error preparing the insert statement"); window.location.href="blog-detail";</script>';
-        exit;
+        if (!empty($safeImageName) && file_exists($location . $safeImageName)) {
+            unlink($location . $safeImageName);
+        }
+        blogInsertAlert('Error preparing the insert statement: ' . mysqli_error($con));
     }
 
     mysqli_stmt_close($ins);

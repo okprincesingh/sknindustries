@@ -1,19 +1,28 @@
 <?php
-$edit2id = $_REQUEST['id'];
 include 'config/connection.php';
-$sel = "SELECT * FROM blog WHERE id ='$edit2id'";
-$r = mysqli_query($con, $sel);
-$k = mysqli_fetch_array($r);
-?>
-<?php
+
+function blogEditAlert($message)
+{
+    echo "<script>alert('" . addslashes($message) . "'); window.location.href='blog-detail'; </script>";
+    exit;
+}
+
+function blogCreateSlug($string)
+{
+    $slug = strtolower(trim($string));
+    $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
+    $slug = trim($slug, '-');
+    return '/' . $slug;
+}
+
 if (isset($_POST['blog_update'])) {
-    $id = $_POST['id'] ?? ''; // Assuming 'id' is the primary key of your blog table
+    $id = (int) ($_POST['id'] ?? 0);
     $title = $_POST['title'] ?? '';
     $admin_name = $_POST['admin_name'] ?? '';
     $submittedDate = trim($_POST['date'] ?? '');
     $date = $submittedDate !== '' ? date('M. d, Y', strtotime($submittedDate)) : date('M. d, Y');
-    $image_name = isset($_FILES['image']['name']) ? $_FILES['image']['name'] : '';
-    $image_tmp_name = isset($_FILES['image']['tmp_name']) ? $_FILES['image']['tmp_name'] : '';
+    $image_name = $_FILES['image']['name'] ?? '';
+    $image_tmp_name = $_FILES['image']['tmp_name'] ?? '';
     $meta_title = $_POST['meta_title'] ?? '';
     $meta_description = $_POST['meta_description'] ?? '';
     $meta_keyword = $_POST['meta_keyword'] ?? '';
@@ -21,109 +30,108 @@ if (isset($_POST['blog_update'])) {
     $slug_url = trim($_POST['slug_url'] ?? '');
     $description = $_POST['description'] ?? '';
     $location = __DIR__ . "/../blog/images/";
-    $safeImageName = !empty($image_name) ? time() . '_' . basename($image_name) : '';
 
-    include 'config/connection.php';
-
-    // Get old blog image
-    $oldImage = "";
-
-    $getOldImage = mysqli_query($con, "SELECT image FROM blog WHERE id='$id'");
-
-    if ($getOldImage && mysqli_num_rows($getOldImage) > 0) {
-    $oldRow = mysqli_fetch_assoc($getOldImage);
-    $oldImage = $oldRow['image'];
+    if ($id <= 0) {
+        blogEditAlert('Invalid blog id');
     }
 
-    function createSlug($string)
-    {
-        // Convert the string to lowercase
-        $slug = strtolower($string);
-        // Replace spaces with hyphens
-        $slug = '/'.str_replace(' ', '-', $slug);
-        // Remove special characters
-        return $slug;
-    }
-
-    $slug = $slug_url !== '' ? $slug_url : createSlug($title);
-    $slug = preg_replace('/\s+/', '-', trim($slug));
-
-    // Use prepared statement to prevent SQL injection
-    if (empty($_FILES['image']['name'])) {
-        $update = mysqli_prepare($con, "UPDATE blog SET title=?, admin_name=?, date=?, meta_title=?, meta_description=?, meta_keyword=?, canonical_url=?, description=?, slug_url=? WHERE id=?");
-        mysqli_stmt_bind_param($update, "sssssssssi", $title, $admin_name, $date, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
+    $oldImage = '';
+    $oldImageResult = mysqli_query($con, "SELECT image FROM blog WHERE id=$id");
+    if ($oldImageResult && $oldRow = mysqli_fetch_assoc($oldImageResult)) {
+        $oldImage = $oldRow['image'];
     } else {
-        $update = mysqli_prepare($con, "UPDATE blog SET title=?, admin_name=?, date=?, image=?, meta_title=?, meta_description=?, meta_keyword=?, canonical_url=?, description=?, slug_url=? WHERE id=?");
-        mysqli_stmt_bind_param($update, "ssssssssssi", $title, $admin_name, $date, $safeImageName, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
+        blogEditAlert('Blog record not found');
     }
 
-    if ($update) {
-        if (mysqli_stmt_execute($update)) {
-            if (!empty($_FILES['image']['name'])) {
-                if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
-                    echo "<script>alert('Upload error code: " . (int) $_FILES['image']['error'] . "'); window.location.href='blog-detail'; </script>";
-                    exit;
-                }
+    $slug = $slug_url !== '' ? '/' . ltrim($slug_url, '/') : blogCreateSlug($title);
+    $newImageName = $oldImage;
+    $uploadedNewImage = false;
 
-                if (!is_dir($location) && !mkdir($location, 0755, true)) {
-                    echo "<script>alert('Blog image folder does not exist or cannot be created'); window.location.href='blog-detail'; </script>";
-                    exit;
-                }
-
-                if (!is_writable($location)) {
-                    echo "<script>alert('Blog image folder is not writable'); window.location.href='blog-detail'; </script>";
-                    exit;
-                }
-
-                $targetPath = $location . $safeImageName;
-                if (move_uploaded_file($image_tmp_name, $targetPath)) {
-                    // Delete old image after successful upload
-                    if (!empty($oldImage)) {
-                        $oldImagePath = $location . $oldImage;
-
-                        if (file_exists($oldImagePath)) {
-                            unlink($oldImagePath);
-                        }
-                    }
-                } else {
-                    echo "<script>alert('Error moving uploaded file. Check blog/images folder permission.'); window.location.href='blog-detail'; </script>";
-                    exit;
-                }
-            }
-
-            echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var smsPopup = document.createElement('div');
-                        smsPopup.innerText = 'Data updated successfully';
-                        smsPopup.style.position = 'fixed';
-                        smsPopup.style.bottom = '10px';
-                        smsPopup.style.right = '10px';
-                        smsPopup.style.backgroundColor = '#4caf50';
-                        smsPopup.style.color = '#fff';
-                        smsPopup.style.padding = '10px';
-                        smsPopup.style.borderRadius = '5px';
-                        smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
-                        document.body.appendChild(smsPopup);
-                        setTimeout(function() {
-                            smsPopup.remove();
-                            window.location.href = 'blog-detail';
-                        }, 3000);
-                    });
-                  </script>";
-        } else {
-            // Error executing the update
-            echo "<script>alert('Error executing the update'); window.location.href='blog-detail'; </script>";
-            exit;
+    if (!empty($image_name)) {
+        if (($_FILES['image']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+            blogEditAlert('Upload error code: ' . (int) $_FILES['image']['error']);
         }
-    } else {
-        // Error preparing the update statement
-        echo "<script>alert('Error preparing the update statement'); window.location.href='blog-detail'; </script>";
-        exit;
+
+        if (!is_dir($location) && !mkdir($location, 0755, true)) {
+            blogEditAlert('Blog image folder does not exist or cannot be created');
+        }
+
+        if (!is_writable($location)) {
+            blogEditAlert('Blog image folder is not writable');
+        }
+
+        $extension = pathinfo($image_name, PATHINFO_EXTENSION);
+        $baseName = pathinfo($image_name, PATHINFO_FILENAME);
+        $baseName = preg_replace('/[^A-Za-z0-9_-]+/', '-', $baseName);
+        $newImageName = time() . '_' . trim($baseName, '-');
+        if ($extension !== '') {
+            $newImageName .= '.' . strtolower($extension);
+        }
+
+        if (!move_uploaded_file($image_tmp_name, $location . $newImageName)) {
+            blogEditAlert('Error moving uploaded file. Check blog/images folder permission.');
+        }
+        $uploadedNewImage = true;
     }
 
-    // Close the statement and connection
+    $update = mysqli_prepare($con, "UPDATE blog SET title=?, admin_name=?, date=?, image=?, meta_title=?, meta_description=?, meta_keyword=?, canonical_url=?, description=?, slug_url=? WHERE id=?");
+    if (!$update) {
+        if ($uploadedNewImage && file_exists($location . $newImageName)) {
+            unlink($location . $newImageName);
+        }
+        blogEditAlert('Error preparing the update statement: ' . mysqli_error($con));
+    }
+
+    mysqli_stmt_bind_param($update, "ssssssssssi", $title, $admin_name, $date, $newImageName, $meta_title, $meta_description, $meta_keyword, $canonical_url, $description, $slug, $id);
+
+    if (mysqli_stmt_execute($update)) {
+        if ($uploadedNewImage && !empty($oldImage) && $oldImage !== $newImageName) {
+            $oldImagePath = $location . $oldImage;
+            if (is_file($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+
+        echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var smsPopup = document.createElement('div');
+                    smsPopup.innerText = 'Data updated successfully';
+                    smsPopup.style.position = 'fixed';
+                    smsPopup.style.bottom = '10px';
+                    smsPopup.style.right = '10px';
+                    smsPopup.style.backgroundColor = '#4caf50';
+                    smsPopup.style.color = '#fff';
+                    smsPopup.style.padding = '10px';
+                    smsPopup.style.borderRadius = '5px';
+                    smsPopup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+                    document.body.appendChild(smsPopup);
+                    setTimeout(function() {
+                        smsPopup.remove();
+                        window.location.href = 'blog-detail';
+                    }, 1000);
+                });
+              </script>";
+    } else {
+        if ($uploadedNewImage && file_exists($location . $newImageName)) {
+            unlink($location . $newImageName);
+        }
+        blogEditAlert('Error executing the update: ' . mysqli_stmt_error($update));
+    }
+
     mysqli_stmt_close($update);
     mysqli_close($con);
+    exit;
+}
+
+$edit2id = (int) ($_REQUEST['id'] ?? 0);
+if ($edit2id <= 0) {
+    blogEditAlert('Invalid blog id');
+}
+
+$r = mysqli_query($con, "SELECT * FROM blog WHERE id=$edit2id");
+$k = $r ? mysqli_fetch_array($r, MYSQLI_BOTH) : null;
+if (!$k) {
+    blogEditAlert('Blog record not found');
 }
 ?>
 
