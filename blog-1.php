@@ -1,5 +1,6 @@
 <?php 
 include "./admin/config/connection.php";
+require_once __DIR__ . '/includes/seo-404.php';
 if(isset($_SERVER['PATH_INFO'])){
     $normalizedPath = '/' . trim(rawurldecode($_SERVER['PATH_INFO']), '/');
     $lowercasePath = strtolower($normalizedPath);
@@ -20,6 +21,10 @@ if(isset($_SERVER['PATH_INFO'])){
    mysqli_stmt_execute($stmt);
    $query = mysqli_stmt_get_result($stmt);
    $row = mysqli_fetch_array($query);
+   mysqli_stmt_close($stmt);
+   if (!$row) {
+       renderSeoNotFound();
+   }
    $id = $row['id'];
    $image = $row['image'];
    $meta_keyword = $row['meta_keyword'];

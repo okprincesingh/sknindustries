@@ -1,5 +1,6 @@
 <?php 
 include "./admin/config/connection.php";
+require_once __DIR__ . '/includes/seo-404.php';
 // Check if the path info (slug) is present
 if (isset($_SERVER['PATH_INFO'])) {
     $slug_url = $_SERVER['PATH_INFO'];
@@ -11,6 +12,9 @@ if (isset($_SERVER['PATH_INFO'])) {
     $sql = "SELECT * FROM pro_categories WHERE slug_url = '$slug_url'";
     $query = mysqli_query($con, $sql);
     $row = mysqli_fetch_array($query);
+    if (!$row) {
+        renderSeoNotFound();
+    }
 
     // Extract category data
     $cat_name = $row['cat_name'];

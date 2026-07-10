@@ -344,14 +344,12 @@
             <i class="fas fa-home"></i>
             Take Me Home
         </a>
-        <div class="countdown" id="countdown">Redirecting you shortly...</div>
     </div>
 
     <script>
         // Make character interactive
         const character = document.querySelector('.character');
         const homeButton = document.getElementById('homeButton');
-        const countdownElement = document.getElementById('countdown');
         
         character.addEventListener('mouseenter', () => {
             character.style.animationPlayState = 'paused';
@@ -369,12 +367,6 @@
                 window.location.href = homeButton.getAttribute('href');
             }, 1000);
         });
-        
-        // Auto-click the button after 1 second
-        setTimeout(() => {
-            countdownElement.textContent = "Taking you home now...";
-            homeButton.click();
-        }, 1000);
         
         function triggerConfetti() {
             // Create confetti

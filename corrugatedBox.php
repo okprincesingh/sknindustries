@@ -1,6 +1,7 @@
 <?php 
 
 include "./admin/config/connection.php";
+require_once __DIR__ . '/includes/seo-404.php';
 $proid = 0;
 $catid = 0;
 $product_name = '';
@@ -52,6 +53,8 @@ if (isset($_SERVER['PATH_INFO'])) {
         $metatitle = !empty($row['metatitle']) ? $row['metatitle'] : ($product_url . ' | SKN Industries');
         $canonical_url = $row['canonical_url'] ?? '';
         $slug_url = $row['slug_url'] ?? '';
+    } else {
+        renderSeoNotFound();
     }
 }
 ?>
