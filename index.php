@@ -280,7 +280,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="row gy-2 justify-content-center">
           <div class="col-lg-1 col-4 mb-1 sol-card">
             <a href="#" style="text-decoration: none"></a>
-            <img src="assets/imgs/creative2/image 14 (1).png" alt="skn industries" width="100%" />
+            <img src="assets/imgs/creative2/elec.png" alt="skn industries" width="100%" />
             <h6 class="">Electronics</h6>
             </a>
           </div>
@@ -294,7 +294,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
           <div class="col-lg-1 col-4 mb-1 sol-card">
             <a href="#" style="text-decoration: none">
-              <img src="assets/imgs/creative2/image (2).png" alt="skn industries" width="100%" />
+              <img src="assets/imgs/creative2/food-&-beverage.webp" alt="skn industries" width="100%" />
               <h6 class="">Food & Beverage</h6>
             </a>
           </div>
@@ -304,7 +304,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
           <div class="col-lg-1 col-4 mb-1 sol-card">
             <a href="#" style="text-decoration: none">
-              <img src="assets/imgs/creative2/image (3).png" alt="skn industries" width="100%" />
+              <img src="assets/imgs/creative2/cosmetics-&-pharmacy.webp" alt="skn industries" width="100%" />
               <h6 class="">Cosmetics & Pharmacy </h6>
             </a>
           </div>
